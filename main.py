@@ -1,16 +1,27 @@
-# This is a sample Python script.
+"""
+-------------------------------------------------
+File Name: main.py
+Author: Mikołaj Wiśniewski
+Created: 2025-06-09
+Version: 1.0
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+Description: main file
 
+Dependencies:
+- Python 3.10+
+- Required libraries: sklearn
+-------------------------------------------------
+"""
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from src.data_preprocessing import load_and_clean_data, standardize_data, split_features_target
+from src.models import build_ann
+from sklearn.model_selection import train_test_split
 
+data = load_and_clean_data("data/dane_3.csv")
+data, scaler = standardize_data(data)
+X, y = split_features_target(data)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+model = build_ann(input_dim=X.shape[1], layers=[256, 64, 32], learning_rate=0.001)
+model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.2)
