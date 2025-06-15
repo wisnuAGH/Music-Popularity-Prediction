@@ -23,7 +23,15 @@ from sklearn.preprocessing import MinMaxScaler
 
 def load_and_clean_data(path):
     data = pd.read_csv(path)
-    data = data.drop(columns=['streaming_platform', 'key', 'mode'], errors='ignore')
+    data = data.drop(columns=[
+        'track_name',
+        'track_artist',
+        'playlist_genre',
+        'playlist_subgenre',
+        'key',
+        'mode',
+        'loudness'  # cecha silnie skorelowana
+    ], errors='ignore')
     data = data.drop_duplicates()
     return data
 
@@ -33,7 +41,31 @@ def standardize_data(data):
     return pd.DataFrame(scaler.fit_transform(data), columns=data.columns), scaler
 
 
-def split_features_target(data, target_col='popularity'):
+def split_features_target(data, target_col='track_popularity'):
     X = data.drop(columns=[target_col])
     y = data[target_col]
+    print("\nData length:", len(X))
     return X, y
+
+
+def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Removes outliers from a DataFrame using the IQR (interquartile range) method.
+    Applies only to numeric columns.
+    """
+    numeric_cols = df.select_dtypes(include='number').columns
+    df_filtered = df.copy()
+
+    for col in numeric_cols:
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+
+        df_filtered = df_filtered[
+            (df_filtered[col] >= lower_bound) & (df_filtered[col] <= upper_bound)
+        ]
+
+    df_filtered.reset_index(drop=True, inplace=True)
+    return df_filtered

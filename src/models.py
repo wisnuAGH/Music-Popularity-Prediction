@@ -5,7 +5,7 @@ Author: Mikołaj Wiśniewski
 Created: 2025-06-09
 Version: 1.0
 
-Description: Neural network model + Lasso regression.
+Description: Best model -> Neural network model + Lasso regression.
 
 Dependencies:
 - Python 3.10+
