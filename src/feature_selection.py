@@ -1,16 +1,20 @@
+from sklearn.linear_model import LassoCV
 from sklearn.feature_selection import RFE
-from sklearn.linear_model import Lasso
+import numpy as np
 
 
 def select_top_features_rfe(X, y, n_features=5):
-    estimator = Lasso(alpha=0.1, max_iter=10000)
-    selector = RFE(estimator, n_features_to_select=n_features)
+    lasso_cv = LassoCV(cv=5, max_iter=10000, random_state=42)
+    selector = RFE(estimator=lasso_cv, n_features_to_select=n_features)
     selector.fit(X, y)
-    selected_features = X.columns[selector.support_]
 
-    print("\n=== Feature Selection (RFE) ===")
-    print("Available features:", list(X.columns))
-    print("Selected features:", list(selected_features))
-    print("===============================\n")
+    selected_mask = selector.support_
+    selected_features = X.columns[selected_mask]
+
+    print("\n=== Feature Selection (RFE + LassoCV) ===")
+    print("Wybrane cechy:", list(selected_features))
+    print("Alpha wybrane przez LassoCV:", lasso_cv.alphas)
+    print("Współczynniki cech:", dict(zip(X.columns, np.round(selector.estimator_.coef_, 4))))
+    print("=========================================\n")
 
     return X[selected_features]

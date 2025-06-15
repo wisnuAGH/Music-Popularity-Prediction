@@ -14,18 +14,34 @@ Dependencies:
 """
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Dropout, BatchNormalization, Input
 from tensorflow.keras.optimizers import Adam
 
 
-def build_ann(input_dim, layers, learning_rate):
-    model = Sequential()
-    model.add(Dense(layers[0], activation='relu', input_shape=(input_dim,)))
-    for units in layers[1:]:
-        if units:
-            model.add(Dense(units, activation='relu'))
-    model.add(Dense(1))
-    model.compile(optimizer=Adam(learning_rate=learning_rate),
-                  loss='mean_squared_error',
-                  metrics=['mean_absolute_error'])
+def build_ann(input_dim):
+    model = Sequential([
+        Input(shape=(input_dim,)),
+
+        Dense(256, activation='relu'),
+        BatchNormalization(),
+        Dropout(0.3),
+
+        Dense(64, activation='relu'),
+        BatchNormalization(),
+        Dropout(0.3),
+
+        Dense(16, activation='relu'),
+        BatchNormalization(),
+        Dropout(0.3),
+
+        Dense(1)  # regresja, bez aktywacji
+    ])
+
+    model.compile(
+        optimizer=Adam(learning_rate=0.0001),
+        loss='mean_squared_error',
+        metrics=['mean_absolute_error']
+    )
+
     return model
+
