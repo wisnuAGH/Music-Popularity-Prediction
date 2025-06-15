@@ -21,8 +21,16 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 
-def load_and_clean_data(path):
+def load_data(path):
     data = pd.read_csv(path)
+    return data
+
+
+def filter_rap_genre(data):
+    return data[data['playlist_genre'].str.lower() == 'rap']
+
+
+def clean_data(data):
     data = data.drop(columns=[
         'track_name',
         'track_artist',

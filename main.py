@@ -17,10 +17,12 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 from src.data_preprocessing import (
-    load_and_clean_data,
+    load_data,
     remove_outliers,
     standardize_data,
-    split_features_target
+    split_features_target,
+    filter_rap_genre,
+    clean_data
 )
 from src.feature_selection import select_top_features_rfe
 from src.models import build_ann
@@ -29,7 +31,9 @@ from src.utils import evaluate_model
 from src.visualization import plot_learning_curves
 
 # === 1. Load and preprocess data ===
-data = load_and_clean_data("data/data.csv")
+data = load_data("data/data.csv")
+data = filter_rap_genre(data)  # ograniczenie zbioru do gatunku RAP
+data = clean_data(data)
 data = remove_outliers(data)  # usuwa odstające wartości tylko raz
 data, scaler = standardize_data(data)  # tylko jedna standaryzacja
 
