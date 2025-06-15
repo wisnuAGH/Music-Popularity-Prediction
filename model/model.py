@@ -3,7 +3,7 @@ import joblib
 import pandas as pd
 
 # 1. Wczytaj model i scaler
-model = load_model("popularity_model.h5")
+model = load_model("popularity_model.keras")
 scaler = joblib.load("scaler.pkl")
 
 # 2. Dane nowego utworu

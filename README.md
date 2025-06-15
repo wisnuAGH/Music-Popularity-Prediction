@@ -71,9 +71,13 @@ music-popularity-prediction/
 
 └── README.md
 
+## Learning Curves
+
+![Learning Curves](results/learning_curves.png)
+
 ## 📌 Planned Extensions
 
-- Export of trained models (`.h5`, `.pkl`)
+- Export of trained models (`.keras`, `.pkl`)
 - Flask/FastAPI endpoint for popularity prediction
 - Real-time analysis using Spotify API (given user input)
 
